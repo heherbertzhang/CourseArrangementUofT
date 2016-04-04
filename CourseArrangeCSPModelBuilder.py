@@ -151,7 +151,7 @@ class CourseModelBuilder:
         tutConts = self.SS_helper_binary(course, tutSecs)
         labConts = self.SS_helper_binary(course, labSecs)
         constraints = lecConts + tutConts + labConts
-        #constraints += self.createSameSecForLecTutPraConstraints(course, lecSecs, tutSecs, labSecs)
+        constraints += self.createSameSecForLecTutPraConstraints(course, lecSecs, tutSecs, labSecs)
         return constraints
 
     def createSameSecForLecTutPraConstraints(self, course, lecs, tuts, labs):
@@ -255,7 +255,6 @@ class CourseModelBuilder:
     def getAllTimeVarForCourse(self, course):
         secs = course.getAllSectionCopy()
         times = self.getAllTimeVarForSects(*secs)
-        print("called!!!!!")
         return self.sumList(times)
 
     def getAllTimeVarForSects(self, *secs):
@@ -283,9 +282,10 @@ def numberReqFunc(number, vals):
     courses = []
     for val in vals:
         if isinstance(val, tuple):
+            #print("val", val[0], val[1])
             if val[0] not in courses:
-                count+=1
-                courses.append(val)
+                count += 1
+                courses.append(val[0])
     if count == number:
         return True
     else:

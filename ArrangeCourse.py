@@ -19,13 +19,13 @@ def main():
     courseBuilder = CourseModelBuilder(courseList)
     course_csp = courseBuilder.buildModel()
     print([str(c) for c in courseList])
-
+    '''
     for var in course_csp.get_all_vars():
         assert isinstance(var, Variable)
         s = ""
         for d in var.domain():
             s+=str(d) + " , "
-        print(s)
+        print(s)'''
     btracker = BT(course_csp)
     #btracker.trace_on()
 
