@@ -15,16 +15,17 @@ def main():
             notfinish = False
         courseList += getCourses(courseName, courseCode)'''
     courseList += getCourses("Artificial Intelligence", "CSC384H1")
+    courseList += getCourses("Natural Language Computing", "CSC401H1")
     courseBuilder = CourseModelBuilder(courseList)
     course_csp = courseBuilder.buildModel()
-    print(course_csp.get_all_cons())
-    '''
+    print([str(c) for c in courseList])
+
     for var in course_csp.get_all_vars():
         assert isinstance(var, Variable)
         s = ""
         for d in var.domain():
             s+=str(d) + " , "
-        print(s)'''
+        print(s)
     btracker = BT(course_csp)
     #btracker.trace_on()
 

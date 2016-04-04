@@ -23,7 +23,7 @@ class CourseModelBuilder:
     def createNumCourseRequire(self, number):
         c = Constraint("number of courses", list(self.timeDic.values()))
         f = partial(numberReqFunc, number)
-        print("test fc", f(["no", self.courseList[0], self.courseList[0], "no"]))
+        #print("test fc", f(["no", self.courseList[0], self.courseList[0], "no"]))
         c.add_satisfy_function(f)
         return c
 
@@ -71,7 +71,7 @@ class CourseModelBuilder:
             PRCs = self.create_all_prConstraints(course, prereqs)
             csp.add_constraints(PRCs)
         # for number of courses
-        c = self.createNumCourseRequire(1)
+        c = self.createNumCourseRequire(2)
         csp.add_constraint(c)
         return csp
 
@@ -145,12 +145,53 @@ class CourseModelBuilder:
         # all-nary should be faster
         assert isinstance(course, Course)
         lecSecs, tutSecs, labSecs = course.getAllSectionCopy()
-
+        t = course.getTutSectionsCopy()
+        print("tut!!!", t)
         lecConts = self.SS_helper_binary(course, lecSecs)
         tutConts = self.SS_helper_binary(course, tutSecs)
         labConts = self.SS_helper_binary(course, labSecs)
         constraints = lecConts + tutConts + labConts
+        #constraints += self.createSameSecForLecTutPraConstraints(course, lecSecs, tutSecs, labSecs)
         return constraints
+
+    def createSameSecForLecTutPraConstraints(self, course, lecs, tuts, labs):
+        lectimesForAllSecs = self.getAllTimeVarForSects(*lecs)
+        tutTimesForAllSecs = self.getAllTimeVarForSects(*tuts)
+        labTimesForAllSecs = self.getAllTimeVarForSects(*labs)
+        print(lectimesForAllSecs)
+        lecTimes = self.sumList(lectimesForAllSecs)
+        tutTimes = self.sumList(tutTimesForAllSecs)
+        labTimes = self.sumList(labTimesForAllSecs)
+        cs = []
+        cs += self.lecTutPraIfOneMustAll(course, lecTimes, [tutTimes, labTimes])
+        cs += self.lecTutPraIfOneMustAll(course, tutTimes, [lecTimes, labTimes])
+        cs += self.lecTutPraIfOneMustAll(course, labTimes, [lecTimes, tutTimes])
+        return cs
+
+    def sumList(self, inputs):
+        if inputs:
+            i = list(inputs)
+            r = i.pop(0)
+            for l in i:
+                r+=l
+            return r
+        else:
+            return []
+
+    def lecTutPraIfOneMustAll(self, course, lecTimes, othertwo):
+        cs = []
+        print("other two", othertwo)
+        for time in lecTimes:
+            for other in othertwo:
+                if other:
+                    cname = "SS_LTP:{}".format(course)
+                    c = Constraint(cname, [time] + other)
+                    print("time + other", [time] + other)
+                    f = partial(preqFunction, course, course)
+                    c.add_satisfy_function(f)
+                    cs.append(c)
+        return cs
+
 
     def SS_helper_binary(self, course, lecSecs):
         constraints = []
@@ -214,7 +255,8 @@ class CourseModelBuilder:
     def getAllTimeVarForCourse(self, course):
         secs = course.getAllSectionCopy()
         times = self.getAllTimeVarForSects(*secs)
-        return sum(times)
+        print("called!!!!!")
+        return self.sumList(times)
 
     def getAllTimeVarForSects(self, *secs):
         result = []
@@ -235,12 +277,13 @@ class CourseModelBuilder:
         return self.timeDic[time]
 
 
+
 def numberReqFunc(number, vals):
     count = 0
     courses = []
     for val in vals:
         if isinstance(val, tuple):
-            if val not in courses:
+            if val[0] not in courses:
                 count+=1
                 courses.append(val)
     if count == number:
