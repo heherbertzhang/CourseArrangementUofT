@@ -71,7 +71,7 @@ class CourseModelBuilder:
             PRCs = self.create_all_prConstraints(course, prereqs)
             csp.add_constraints(PRCs)
         # for number of courses
-        c = self.createNumCourseRequire(2)
+        c = self.createNumCourseRequire(3)
         csp.add_constraint(c)
         return csp
 
@@ -101,22 +101,28 @@ class CourseModelBuilder:
 
             assert isinstance(course, Course)
             for c in sameCodeCourses:
-                if c.getGeneralCourseCode == generalCode:
+                if c.getGeneralCourseCode() == generalCode:
                     pairs.add(c)
             for rc in pairs:
                 sameCodeCourses.remove(rc)
             if len(pairs) > 0:
                 pairs.add(course)
                 MEpairs.append(pairs)
+        for p in MEpairs:
+            print("pair start")
+            for pp in p:
+                print("ME!!!", pp)
         return MEpairs
 
 
     def create_all_MEConstraints(self, MElist):
         MEl = list(MElist)
+        cs = []
         while MEl:
             course = MEl.pop(0)
             for c in MEl:
-                self.create_MutualExclusiveConstraints(course, c)
+                cs += self.create_MutualExclusiveConstraints(course, c)
+        return cs
 
     def create_MutualExclusiveConstraints(self, course1, course2):
         assert isinstance(course1, Course)
@@ -145,8 +151,6 @@ class CourseModelBuilder:
         # all-nary should be faster
         assert isinstance(course, Course)
         lecSecs, tutSecs, labSecs = course.getAllSectionCopy()
-        t = course.getTutSectionsCopy()
-        print("tut!!!", t)
         lecConts = self.SS_helper_binary(course, lecSecs)
         tutConts = self.SS_helper_binary(course, tutSecs)
         labConts = self.SS_helper_binary(course, labSecs)
@@ -254,6 +258,9 @@ class CourseModelBuilder:
 
     def getAllTimeVarForCourse(self, course):
         secs = course.getAllSectionCopy()
+
+        secs = self.sumList(secs)
+        print("after sum", secs)
         times = self.getAllTimeVarForSects(*secs)
         return self.sumList(times)
 
@@ -283,6 +290,12 @@ def numberReqFunc(number, vals):
     for val in vals:
         if isinstance(val, tuple):
             #print("val", val[0], val[1])
+            coursecode =val[0].getGeneralCourseCode()
+            '''
+            if coursecode not in courses:
+                count += 1
+                courses.append(coursecode)
+                '''
             if val[0] not in courses:
                 count += 1
                 courses.append(val[0])

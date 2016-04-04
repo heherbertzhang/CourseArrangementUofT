@@ -16,6 +16,7 @@ def main():
         courseList += getCourses(courseName, courseCode)'''
     courseList += getCourses("Artificial Intelligence", "CSC384H1")
     courseList += getCourses("Natural Language Computing", "CSC401H1")
+    courseList += getCourses("Introduction to Computer Science", "CSC148H1")
     courseBuilder = CourseModelBuilder(courseList)
     course_csp = courseBuilder.buildModel()
     print([str(c) for c in courseList])

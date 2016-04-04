@@ -55,6 +55,7 @@ def parsePrereqOrExclusion(prereq):
         return [p[0:9] for p in prereq]
 
 def parseCourseJson(jsonobj):
+    print(jsonobj)
     courseCode = jsonobj["code"]
     courseName = jsonobj["name"]
     prerequisites = jsonobj["prerequisites"]
@@ -82,7 +83,9 @@ def parseCourseJson(jsonobj):
 def parseSection(section, term):
     sectionName = section["code"]
     times = section["times"]
-    instructor = section["instructors"][0]
+    instructor =""
+    if section["instructors"]:
+        instructor = section["instructors"][0]
     timelist = []
     for time in times:
         timelist += parseTime(time, term)
@@ -114,7 +117,7 @@ def parseTime(time, term):
     result = []
     for i in range(duration):
         hour = start + i
-        result.append(term+"-"+day+"-"+str(hour)) #the hour is start time and duration for 1 hour
+        result.append(term+"-"+day+"-"+str(hour)) # the hour is start time and duration for 1 hour
     return result
 '''
 for c in getCourses("artificial intelligence", "CSC384H1"):

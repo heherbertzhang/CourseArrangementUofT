@@ -368,7 +368,11 @@ class CSP:
     def print_soln(self):
         print("CSP", self.name, " Assignments = ")
         for v in self.vars:
-            print(v, " = ", v.get_assigned_value(), "    ", end='')
+            #print(v, " = ", v.get_assigned_value(), "    ", end='')
+            value = v.get_assigned_value()
+            if isinstance(value, tuple):
+                print("{:40s} = {:20s}, {:7}".format(str(v), str(value[0]), str(value[1])))
+
         print("")
 
 ########################################################
