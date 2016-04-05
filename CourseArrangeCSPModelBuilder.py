@@ -15,7 +15,7 @@ class CourseModelBuilder:
             for day in weekdays:
                 for i in range(9, 21):
                     time_name = term + "-" + day + "-" + str(i)
-                    #print("time name", time_name)
+                    # print("time name", time_name)
                     v = Variable(time_name)
                     self.timeDic[time_name] = v
         self.addDomainForTimeVars()
@@ -23,13 +23,13 @@ class CourseModelBuilder:
     def createNumCourseRequire(self, number):
         c = Constraint("number of courses", list(self.timeDic.values()))
         f = partial(numberReqFunc, number)
-        #print("test fc", f(["no", self.courseList[0], self.courseList[0], "no"]))
+        # print("test fc", f(["no", self.courseList[0], self.courseList[0], "no"]))
         c.add_satisfy_function(f)
         return c
 
     def addDomainForTimeVars(self):
-        #add None choice
-        none = "No Course"#Course("None", "No Course", "", [], [], [], [], [])
+        # add None choice
+        none = "No Course"  # Course("None", "No Course", "", [], [], [], [], [])
         for timeVar in list(self.timeDic.values()):
             timeVar.add_domain_values([none])
         # add domain for time
@@ -38,7 +38,7 @@ class CourseModelBuilder:
             lecs, tuts, labs = course.getAllSectionCopy()
             sects = lecs + tuts + labs
             for sect in sects:
-                #assert isinstance(sect, Section)
+                # assert isinstance(sect, Section)
                 for time in sect.times:
                     var = self.getVariableForTime(time)
                     assert isinstance(var, Variable)
@@ -55,6 +55,7 @@ class CourseModelBuilder:
 
     def buildModel(self):
         vars = list(self.timeDic.values())
+        vars = sorted(vars, key=getCompareKeyforTimeName)
         csp = CSP("model1:normal model with binary constraints", vars)
         # for SS
         for course in self.courseList:
@@ -67,7 +68,7 @@ class CourseModelBuilder:
             csp.add_constraints(MECs)
         # for PR
         for course in self.courseList:
-            prereqs = self.find_prereq(course) # a list of list
+            prereqs = self.find_prereq(course)  # a list of list
             PRCs = self.create_all_prConstraints(course, prereqs)
             csp.add_constraints(PRCs)
         # for number of courses
@@ -108,12 +109,12 @@ class CourseModelBuilder:
             if len(pairs) > 0:
                 pairs.add(course)
                 MEpairs.append(pairs)
+                '''
         for p in MEpairs:
             print("pair start")
             for pp in p:
-                print("ME!!!", pp)
+                print("ME!!!", pp)'''
         return MEpairs
-
 
     def create_all_MEConstraints(self, MElist):
         MEl = list(MElist)
@@ -162,7 +163,6 @@ class CourseModelBuilder:
         lectimesForAllSecs = self.getAllTimeVarForSects(*lecs)
         tutTimesForAllSecs = self.getAllTimeVarForSects(*tuts)
         labTimesForAllSecs = self.getAllTimeVarForSects(*labs)
-        print(lectimesForAllSecs)
         lecTimes = self.sumList(lectimesForAllSecs)
         tutTimes = self.sumList(tutTimesForAllSecs)
         labTimes = self.sumList(labTimesForAllSecs)
@@ -177,25 +177,23 @@ class CourseModelBuilder:
             i = list(inputs)
             r = i.pop(0)
             for l in i:
-                r+=l
+                r += l
             return r
         else:
             return []
 
     def lecTutPraIfOneMustAll(self, course, lecTimes, othertwo):
         cs = []
-        print("other two", othertwo)
         for time in lecTimes:
             for other in othertwo:
                 if other:
                     cname = "SS_LTP:{}".format(course)
                     c = Constraint(cname, [time] + other)
-                    print("time + other", [time] + other)
+                    #print("time + other", [time] + other)
                     f = partial(preqFunction, course, course)
                     c.add_satisfy_function(f)
                     cs.append(c)
         return cs
-
 
     def SS_helper_binary(self, course, lecSecs):
         constraints = []
@@ -208,7 +206,7 @@ class CourseModelBuilder:
                     f = cfuncBuilder(course, SSCFunc)
                     c.add_satisfy_function(f)
                     constraints.append(c)
-        #create ME for different sections
+        # create ME for different sections
         secs = list(lecSecs)
         while secs:
             sec = secs.pop(0)
@@ -240,7 +238,6 @@ class CourseModelBuilder:
             cs += self.create_prereqConstraints(course, preAlters)
         return cs
 
-
     def create_prereqConstraints(self, course, prereqAlters):
         cs = []
         timeCourse = self.getAllTimeVarForCourse(course)
@@ -248,7 +245,7 @@ class CourseModelBuilder:
         for prereq in prereqAlters:
             timePrereq += self.getAllTimeVarForCourse(prereq)
         for timeC in timeCourse:
-            #cannot be binary
+            # cannot be binary
             c = Constraint("PR:{},{}".format(course.courseCode, prereq.courseCode),
                            [timeC] + timePrereq)
             f = partial(preqFunction, course, prereq)
@@ -260,7 +257,6 @@ class CourseModelBuilder:
         secs = course.getAllSectionCopy()
 
         secs = self.sumList(secs)
-        print("after sum", secs)
         times = self.getAllTimeVarForSects(*secs)
         return self.sumList(times)
 
@@ -272,7 +268,7 @@ class CourseModelBuilder:
         return tuple(result)
 
     def getAllTimeVarForSect(self, sec):
-        #assert isinstance(sec, Section)
+        # assert isinstance(sec, Section)
         result = []
         for t in sec.times:
             v = self.getVariableForTime(t)
@@ -283,14 +279,13 @@ class CourseModelBuilder:
         return self.timeDic[time]
 
 
-
 def numberReqFunc(number, vals):
     count = 0
     courses = []
     for val in vals:
         if isinstance(val, tuple):
-            #print("val", val[0], val[1])
-            coursecode =val[0].getGeneralCourseCode()
+            # print("val", val[0], val[1])
+            coursecode = val[0].getGeneralCourseCode()
             '''
             if coursecode not in courses:
                 count += 1
@@ -303,6 +298,7 @@ def numberReqFunc(number, vals):
         return True
     else:
         return False
+
 
 def MEFunc(course1, course2, vals):
     if vals[0][0] == course1:
@@ -330,3 +326,60 @@ def preqFunction(course, prereq, vals):
         return prereq in [v[0] for v in vals[1:]]
     else:
         return True
+
+
+def convertDay(day):
+    daydict = {"MONDAY": '1', "TUESDAY": '2', "WEDNESDAY": '3', "THURSDAY": '4', "FRIDAY": '5'}
+    return daydict[day]
+
+
+def convertTermSlot(term):
+    termdict = {"Winter": '0', "Summer": '1', "Fall": '2'}
+    return termdict[term]
+
+def getCompareKeyforTimeName(timeVar):
+    timeName = timeVar.name
+    sl = timeName.split("-")
+    yearterm = sl[0].split()
+    year = yearterm[0]
+    term = yearterm[1]
+    term = convertTermSlot(term)
+    day = sl[1]
+    day = convertDay(day)
+    hour = sl[2]
+    if hour == '9':
+        hour = '09'
+    #print("convert",year+term+day+hour, timeName)
+    return year+term+day+hour
+
+def compareTimeName(time1, time2):
+    assert isinstance(time1, str)
+    sl1 = time1.split("-")
+    sl2 = time2.split("-")
+    term1 = sl1[0].split()
+    term2 = sl2[0].split()
+    day1 = sl1[1]
+    day2 = sl2[1]
+    hour1 = sl1[2]
+    hour2 = sl2[2]
+    if term1[0] < term2[0]:
+        return -1
+    elif term1[0] > term2[0]:
+        return 1
+    else:
+        if term1[1] < term2[1]:
+            return -1
+        elif term1[1] > term2[1]:
+            return 1
+        else:
+            if convertDay(day1) < convertDay(day2):
+                return -1
+            elif convertDay(day1) > convertDay(day2):
+                return 1
+            else:
+                if hour1 < hour2:
+                    return -1
+                elif hour1 > hour2:
+                    return 1
+                else:
+                    return 0

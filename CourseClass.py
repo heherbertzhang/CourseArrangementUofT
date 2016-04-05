@@ -12,7 +12,7 @@ class Course:
         self.exclusions = list(exclusions) # in general code form, example : CSC384H1
 
     def __str__(self):
-        return "Course {} at {}".format(self.courseCode, self.term)
+        return "{} {}".format(self.courseCode, self.term)
 
     def getGeneralCourseCode(self):
         return self.courseCode[:8]

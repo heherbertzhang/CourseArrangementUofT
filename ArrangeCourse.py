@@ -3,20 +3,22 @@ from CourseConnector import *
 from CourseArrangeCSPModelBuilder import *
 import propagators
 
+
 def main():
     notfinish = True
     courseList = []
-    '''
+
     while (notfinish):
         courseName = input("Course name? i.e. Artificial Intelligence\n")
         courseCode = input("General course code? i.e. CSC384H1\n")
         finish = input("finish? i.e. yes\n")
-        if finish=="yes":
+        if finish == "yes":
             notfinish = False
-        courseList += getCourses(courseName, courseCode)'''
-    courseList += getCourses("Artificial Intelligence", "CSC384H1")
-    courseList += getCourses("Natural Language Computing", "CSC401H1")
-    courseList += getCourses("Introduction to Computer Science", "CSC148H1")
+        courseList += getCourses(courseName, courseCode)
+    startArrange(courseList)
+
+
+def startArrange(courseList, propagator=propagators.prop_FC):
     courseBuilder = CourseModelBuilder(courseList)
     course_csp = courseBuilder.buildModel()
     print([str(c) for c in courseList])
@@ -28,9 +30,9 @@ def main():
             s+=str(d) + " , "
         print(s)'''
     btracker = BT(course_csp)
-    #btracker.trace_on()
+    # btracker.trace_on()
+    btracker.bt_search(propagator)
 
-    btracker.bt_search(propagators.prop_BT)
 
 if __name__ == '__main__':
     main()

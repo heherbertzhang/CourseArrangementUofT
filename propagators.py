@@ -113,7 +113,7 @@ def prop_FC(csp, newVar=None):
         # the new var is None
         # check the constraints that has only one variable
         constraints = csp.get_all_cons()
-
+    unassignedIndex = 0
     for constraint in constraints:
         if constraint.get_n_unasgn() == 1:
             vars = constraint.get_scope()
@@ -125,13 +125,13 @@ def prop_FC(csp, newVar=None):
                     vals.append(0)
                 else:
                     vals.append(var.get_assigned_value())
-            # test the constraint with tring the value in the domain of the only unassigned variable
+            # test the constraint with string the value in the domain of the only unassigned variable
             cur_dom = unassignedVar.cur_domain()
             for val in cur_dom:
                 vals[unassignedIndex] = val
                 if not constraint.check(vals):
                     unassignedVar.prune_value(val)
-                    pruned.append((var, val))
+                    pruned.append((unassignedVar, val))
             if len(unassignedVar.cur_domain()) == 0:
                 # Domain wiped out
                 return False, pruned

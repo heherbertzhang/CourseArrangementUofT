@@ -55,7 +55,7 @@ def parsePrereqOrExclusion(prereq):
         return [p[0:9] for p in prereq]
 
 def parseCourseJson(jsonobj):
-    print(jsonobj)
+    #print(jsonobj)
     courseCode = jsonobj["code"]
     courseName = jsonobj["name"]
     prerequisites = jsonobj["prerequisites"]

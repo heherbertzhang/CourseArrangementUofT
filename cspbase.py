@@ -186,6 +186,7 @@ class Variable:
            in the domain list of a variable value'''
         return self.dom.index(value)
 
+
     def __repr__(self):
         return("Var-{}".format(self.name))
 
@@ -371,8 +372,9 @@ class CSP:
             #print(v, " = ", v.get_assigned_value(), "    ", end='')
             value = v.get_assigned_value()
             if isinstance(value, tuple):
-                print("{:40s} = {:20s}, {:7}".format(str(v), str(value[0]), str(value[1])))
-
+                print("{:35s} = {:20s}, {:7}".format(str(v), str(value[0]), str(value[1])))
+            else:
+                print("{:35s} = {:20s}, {:7}".format(str(v), value, ""))
         print("")
 
 ########################################################
