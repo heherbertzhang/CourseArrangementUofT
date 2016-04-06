@@ -106,13 +106,13 @@ def prop_FC(csp, newVar=None):
         propagator pruned.
     '''
     pruned = []
-    constraints = []
     if newVar:
         constraints = csp.get_cons_with_var(newVar)
     else:
         # the new var is None
         # check the constraints that has only one variable
         constraints = csp.get_all_cons()
+
     unassignedIndex = 0
     for constraint in constraints:
         if constraint.get_n_unasgn() == 1:
@@ -208,7 +208,7 @@ def prop_GAC(csp, newVar=None):
             if not constraint.has_support(var, val):
                 var.prune_value(val)
                 pruned.append((var, val))
-                #print("pruned, ", val)
+                # print("pruned, ", val)
                 if len(var.cur_domain()) == 0:
                     # Domain wiped out
                     return False, pruned
@@ -222,8 +222,8 @@ def prop_GAC(csp, newVar=None):
             for c in csp.get_cons_with_var(var):
                 for v in c.get_scope():
                     if not v == var:
-                        if (v,c) not in gac_queue:
-                            gac_queue.append((v,c))
+                        if (v, c) not in gac_queue:
+                            gac_queue.append((v, c))
             '''
             for checked_var, checked_constraint in checked_gac_queue:
                 if var in checked_constraint.get_scope() and not checked_var == var:

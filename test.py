@@ -1,5 +1,7 @@
 from ArrangeCourse import *
+import sys
 
+propagatorDict = {"BT":propagators.prop_BT, "FC": propagators.prop_FC, "GAC": propagators.prop_GAC}
 def printCourse(course):
     assert isinstance(course, Course)
     print(course.name, course.courseCode)
@@ -26,14 +28,31 @@ def printCourses(cs):
         printCourse(c)
 
 def simpletest():
+    if len(sys.argv) != 2:
+        print("please enter 1 command line argument for propagator to use i.e. BT, FC, GAC")
     courseList = []
     courseList += getCourses("Artificial Intelligence", "CSC384H1")
     courseList += getCourses("Natural Language Computing", "CSC401H1")
     courseList += getCourses("Introduction to Computer Science", "CSC148H1")
-    courses = getCourses("Introduction to Computer Science", "CSC148H1")
+    #courseList += getCourses("")
+    #courses = getCourses("Introduction to Computer Science", "CSC148H1")
     #printCourses(courses)
+    arg = sys.argv[1]
+    print(arg)
+    propagator = propagatorDict.get(arg)
 
-    #startArrange(courseList, propagators.prop_BT)
+    if propagator:
+        startArrange(courseList, propagator)
+    else:
+        print("No such propagator")
     #startArrange(courseList, propagators.prop_FC)
-    startArrange(courseList, propagators.prop_GAC)
+    #startArrange(courseList, propagators.prop_GAC)
+def testSupportFunction():
+    c1 = getCourses("Artificial Intelligence", "CSC384H1")
+    c2 = getCourses("Natural Language Computing", "CSC401H1")
+    v1 = Variable("v1", )
+    v2 = Variable("v2", [3,4,5])
+    v3 = Variable("v3", [4,5,6])
+    numberRequiredSupportFunc(3, 1, [v1,v2,v3])
+
 simpletest()

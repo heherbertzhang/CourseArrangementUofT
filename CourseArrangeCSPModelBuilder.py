@@ -7,6 +7,7 @@ class CourseModelBuilder:
     def __init__(self, courseList):
         self.timeDic = {}
         self.courseList = courseList
+        self.sortedTimeSlots = None
         terms = self.getTerms()
         # build time variables
         # one day start at 9am-10am timeslot and end at 8pm-9pm (20-21)
@@ -19,20 +20,42 @@ class CourseModelBuilder:
                     v = Variable(time_name)
                     self.timeDic[time_name] = v
         self.addDomainForTimeVars()
+        self.sortedTimeSlots = sorted(list(self.timeDic.values()), key=getCompareKeyforTimeName)
 
     def createNumCourseRequire(self, number):
-        c = Constraint("number of courses", list(self.timeDic.values()))
+        vars = self.findAllTimeHaveCourse()
+        #print("num var", vars)
+        #todo: only add to scope the timeslot has courses and one for each since SS constraints will take care
+        c = Constraint("number of courses", vars)#list(self.timeDic.values()))
         f = partial(numberReqFunc, number)
         # print("test fc", f(["no", self.courseList[0], self.courseList[0], "no"]))
         c.add_satisfy_function(f)
+        sf = partial(numberRequiredSupportFunc, number)
+        c.add_support_function(sf)
         return c
+
+    def findAllTimeHaveCourse(self):
+
+        timehavecourses = set()
+        '''
+        for time in self.sortedTimeSlots:
+            if time.domain_size() > 1:'''
+        for course in self.courseList:
+            for lec in course.getLecSectionsCopy():
+                lectimes = self.getAllTimeVarForSect(lec)
+                timehavecourses.add(lectimes[0])
+                #print("time have course", course, lectimes[0])
+        return list(timehavecourses)
+
 
     def addDomainForTimeVars(self):
         # add None choice
-        none = "No Course"  # Course("None", "No Course", "", [], [], [], [], [])
+        noneCourse = Course("No Course", "No Course", "", [], [], [], [], [])  # "No Course"
+        noneSec = Section("Free", [], "N/A")
         for timeVar in list(self.timeDic.values()):
-            timeVar.add_domain_values([none])
+            timeVar.add_domain_values([(noneCourse, noneSec)])
         # add domain for time
+        timeslotCount = 0
         for course in self.courseList:
             assert isinstance(course, Course)
             lecs, tuts, labs = course.getAllSectionCopy()
@@ -44,6 +67,8 @@ class CourseModelBuilder:
                     assert isinstance(var, Variable)
                     # domain is tuple of course and sec
                     var.add_domain_values([(course, sect)])
+                    timeslotCount += 1
+        print("!!!!!course time slot count", timeslotCount)
 
     def getTerms(self):
         terms = set()
@@ -54,8 +79,7 @@ class CourseModelBuilder:
         return terms
 
     def buildModel(self):
-        vars = list(self.timeDic.values())
-        vars = sorted(vars, key=getCompareKeyforTimeName)
+        vars = list(self.sortedTimeSlots)
         csp = CSP("model1:normal model with binary constraints", vars)
         # for SS
         for course in self.courseList:
@@ -72,7 +96,7 @@ class CourseModelBuilder:
             PRCs = self.create_all_prConstraints(course, prereqs)
             csp.add_constraints(PRCs)
         # for number of courses
-        c = self.createNumCourseRequire(3)
+        c = self.createNumCourseRequire(2)
         csp.add_constraint(c)
         return csp
 
@@ -145,6 +169,8 @@ class CourseModelBuilder:
                 f = partial(MEFunc, Alter1, Alter2)
                 # or use x.name == course1.name
                 constraint.add_satisfy_function(f)
+                sf = partial(MESupportFunc, Alter1, Alter2)
+                constraint.add_support_function(sf)
                 constraints.append(constraint)
         return constraints
 
@@ -189,9 +215,11 @@ class CourseModelBuilder:
                 if other:
                     cname = "SS_LTP:{}".format(course)
                     c = Constraint(cname, [time] + other)
-                    #print("time + other", [time] + other)
+                    # print("time + other", [time] + other)
                     f = partial(preqFunction, course, course)
                     c.add_satisfy_function(f)
+                    sf = partial(preqSupportFunc, course, course)
+                    c.add_support_function(sf)
                     cs.append(c)
         return cs
 
@@ -205,6 +233,8 @@ class CourseModelBuilder:
                     c = Constraint("SS:{}:{}".format(lecSecs[0].name[0], course.courseCode), [time, otherTime])
                     f = cfuncBuilder(course, SSCFunc)
                     c.add_satisfy_function(f)
+                    sf = partial(SSCSupportFunc, course)
+                    c.add_support_function(sf)
                     constraints.append(c)
         # create ME for different sections
         secs = list(lecSecs)
@@ -250,6 +280,8 @@ class CourseModelBuilder:
                            [timeC] + timePrereq)
             f = partial(preqFunction, course, prereq)
             c.add_satisfy_function(f)
+            sf = partial(preqSupportFunc, course, prereq)
+            c.add_support_function(sf)
             cs.append(c)
         return cs
 
@@ -280,29 +312,33 @@ class CourseModelBuilder:
 
 
 def numberReqFunc(number, vals):
+    #print("num!!!!!!!!!!!!!!!!!!")
     count = 0
     courses = []
     for val in vals:
-        if isinstance(val, tuple):
-            # print("val", val[0], val[1])
+        # print("val", val[0], val[1])
+
+        if not val[0].name == "No Course":
             coursecode = val[0].getGeneralCourseCode()
-            '''
+
             if coursecode not in courses:
                 count += 1
                 courses.append(coursecode)
-                '''
+            '''
             if val[0] not in courses:
                 count += 1
-                courses.append(val[0])
+                courses.append(val[0])'''
     if count == number:
+        #print("num : true")
         return True
     else:
+        #print("num : false")
         return False
 
 
 def MEFunc(course1, course2, vals):
-    if vals[0][0] == course1:
-        return vals[1][0] != course2
+    if course1 in vals[0]:
+        return course2 not in vals[1]
     else:  # vals[0] not == course1
         return True
 
@@ -312,6 +348,7 @@ def cfuncBuilder(course, func):
 
 
 def SSCFunc(course, vals):
+    # binary only
     if vals[0][0] == course:
         return vals[1][0] == course
     elif vals[1][0] == course:
@@ -328,6 +365,86 @@ def preqFunction(course, prereq, vals):
         return True
 
 
+def numberRequiredSupportFunc(number, val, othervars):
+    # print("running num req")
+    courses = []
+    count = 0
+    if val[0].name != "No Course":
+        courses.append(val[0].getGeneralCourseCode())
+        count += 1
+
+    for v in othervars:
+        if v.is_assigned():
+            c = v.get_assigned_value()[0]
+            if c.name != "No Course":
+                code = c.getGeneralCourseCode()
+                if code not in courses:
+                    courses.append(code)
+                    count += 1
+    # check if count is over now:
+    if count > number:
+        # print("!!!!!!!!!!!!!!pre false")
+        return False
+    if count == number:
+        # print("!!!!!!!!!!!!!!pre true")
+        return True
+
+    for v in othervars:
+        if not v.is_assigned():  # find if there is course in domain
+            domain = v.cur_domain()
+            for c in [c for c, s in domain]:
+                code = c.getGeneralCourseCode()
+                if code not in courses:
+                    courses.append(code)
+                    count += 1
+                    if count == number:
+                        # print("num true")
+                        return True
+                    break  # one time slot can only count once
+    # print("num false")
+    return False
+
+
+def MESupportFunc(course1, course2, val, othervars):
+    if val[0] == course1:
+        # check other var cur domain contain not only course2
+        for v in othervars:
+            if not len(v.cur_domain()) > 1:
+                if v.cur_domain()[0] == course2:
+                    return False
+    return True
+
+
+def preqSupportFunc(course, prereq, val, othervars):
+    if val[0] == course:
+        # need to check if other var cur domain contain prereq
+        for v in othervars:
+            return prereq in [c for c, s in v.cur_domain()]
+
+    return True
+
+
+def SSCSupportFunc(course, val, othervars):
+    #print("running ss support")
+    if val[0] == course:
+        # check other variable to see if they have course in their domain
+        for v in othervars:
+            assert isinstance(v, Variable)
+            if not course in [c for c, s in v.cur_domain()]:
+                #print("SS false")
+                return False
+
+    else:
+        #the val is not course, check if othervar has course if has return False
+        for v in othervars:
+            assert isinstance(v, Variable)
+            if v.is_assigned():
+                if v.get_assigned_value()[0] == course:
+                    return False
+    #print("SS true")
+    return True
+
+
 def convertDay(day):
     daydict = {"MONDAY": '1', "TUESDAY": '2', "WEDNESDAY": '3', "THURSDAY": '4', "FRIDAY": '5'}
     return daydict[day]
@@ -336,6 +453,7 @@ def convertDay(day):
 def convertTermSlot(term):
     termdict = {"Winter": '0', "Summer": '1', "Fall": '2'}
     return termdict[term]
+
 
 def getCompareKeyforTimeName(timeVar):
     timeName = timeVar.name
@@ -349,11 +467,11 @@ def getCompareKeyforTimeName(timeVar):
     hour = sl[2]
     if hour == '9':
         hour = '09'
-    #print("convert",year+term+day+hour, timeName)
-    return year+term+day+hour
+    # print("convert",year+term+day+hour, timeName)
+    return year + term + day + hour
+
 
 def compareTimeName(time1, time2):
-    assert isinstance(time1, str)
     sl1 = time1.split("-")
     sl2 = time2.split("-")
     term1 = sl1[0].split()
