@@ -18,8 +18,8 @@ def main():
     startArrange(courseList)
 
 
-def startArrange(courseList, propagator=propagators.prop_FC):
-    courseBuilder = CourseModelBuilder(courseList)
+def startArrange(courseList, numberRequire, propagator=propagators.prop_FC):
+    courseBuilder = CourseModelBuilder(courseList, numberRequire)
     course_csp = courseBuilder.buildModel()
     print([str(c) for c in courseList])
     '''

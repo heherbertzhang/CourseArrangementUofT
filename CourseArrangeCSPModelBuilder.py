@@ -4,10 +4,11 @@ from functools import partial
 
 
 class CourseModelBuilder:
-    def __init__(self, courseList):
+    def __init__(self, courseList, numberOfRequriedCourse):
         self.timeDic = {}
         self.courseList = courseList
         self.sortedTimeSlots = None
+        self.numOfRequriedCourse = numberOfRequriedCourse
         terms = self.getTerms()
         # build time variables
         # one day start at 9am-10am timeslot and end at 8pm-9pm (20-21)
@@ -96,7 +97,7 @@ class CourseModelBuilder:
             PRCs = self.create_all_prConstraints(course, prereqs)
             csp.add_constraints(PRCs)
         # for number of courses
-        c = self.createNumCourseRequire(2)
+        c = self.createNumCourseRequire(self.numOfRequriedCourse)
         csp.add_constraint(c)
         return csp
 
@@ -186,17 +187,45 @@ class CourseModelBuilder:
         return constraints
 
     def createSameSecForLecTutPraConstraints(self, course, lecs, tuts, labs):
-        lectimesForAllSecs = self.getAllTimeVarForSects(*lecs)
-        tutTimesForAllSecs = self.getAllTimeVarForSects(*tuts)
-        labTimesForAllSecs = self.getAllTimeVarForSects(*labs)
-        lecTimes = self.sumList(lectimesForAllSecs)
-        tutTimes = self.sumList(tutTimesForAllSecs)
-        labTimes = self.sumList(labTimesForAllSecs)
+        lectimesForAllSecs = [self.getVariableForTime(lec.times[0]) for lec in lecs]
+        tutTimesForAllSecs = [self.getVariableForTime(tut.times[0]) for tut in tuts]
+        labTimesForAllSecs = [self.getVariableForTime(lab.times[0]) for lab in labs]
+        timeslectut = set()
+        timesleclab = set()
+        for t in lectimesForAllSecs:
+            timeslectut.add(t)
+            timesleclab.add(t)
+        for t in tutTimesForAllSecs:
+            timeslectut.add(t)
+        for t in labTimesForAllSecs:
+            timesleclab.add(t)
+        timeslectut = list(timeslectut)
+        timesleclab = list(timesleclab)
         cs = []
-        cs += self.lecTutPraIfOneMustAll(course, lecTimes, [tutTimes, labTimes])
-        cs += self.lecTutPraIfOneMustAll(course, tutTimes, [lecTimes, labTimes])
-        cs += self.lecTutPraIfOneMustAll(course, labTimes, [lecTimes, tutTimes])
+        if tutTimesForAllSecs:
+            c = Constraint("LT:{}".format(course.courseCode), timeslectut)
+            f = partial(LTFunc, course)
+            c.add_satisfy_function(f)
+            cs.append(c)
+            print("course {} add C LT".format(course.courseCode))
+        if labTimesForAllSecs:
+            c = Constraint("LP:{}".format(course.courseCode), timesleclab)
+            f = partial(LPFunc, course)
+            c.add_satisfy_function(f)
+            cs.append(c)
+            print("course {} add C LPPPPP".format(course.courseCode))
+
+        '''
+        #lecTimes = self.sumList(lectimesForAllSecs)
+        #tutTimes = self.sumList(tutTimesForAllSecs)
+        #labTimes = self.sumList(labTimesForAllSecs)
+        cs = []
+        cs += self.lecTutPraIfOneMustAll(course, LecSection, lecTimes, [tutTimes, labTimes], [TutSection, LabSection])
+        cs += self.lecTutPraIfOneMustAll(course, TutSection, tutTimes, [lecTimes, labTimes], [LecSection, LabSection])
+        cs += self.lecTutPraIfOneMustAll(course, LabSection, labTimes, [lecTimes, tutTimes], [LecSection, TutSection])
+        return cs'''
         return cs
+
 
     def sumList(self, inputs):
         if inputs:
@@ -208,15 +237,17 @@ class CourseModelBuilder:
         else:
             return []
 
-    def lecTutPraIfOneMustAll(self, course, lecTimes, othertwo):
+    def lecTutPraIfOneMustAll(self, course, type1, lecTimes, othertwo, type23):
         cs = []
+        #print("type1", type1, "type 23", type23)
         for time in lecTimes:
-            for other in othertwo:
+            for i, other in enumerate(othertwo):
                 if other:
+                    print("add", "type1", type1, "type2", type23[i])
                     cname = "SS_LTP:{}".format(course)
                     c = Constraint(cname, [time] + other)
                     # print("time + other", [time] + other)
-                    f = partial(preqFunction, course, course)
+                    f = partial(preqLTPFunc, type1, course, type23[i], course)
                     c.add_satisfy_function(f)
                     sf = partial(preqSupportFunc, course, course)
                     c.add_support_function(sf)
@@ -231,7 +262,7 @@ class CourseModelBuilder:
                 time = lecTimes.pop(0)
                 for otherTime in lecTimes:
                     c = Constraint("SS:{}:{}".format(lecSecs[0].name[0], course.courseCode), [time, otherTime])
-                    f = cfuncBuilder(course, SSCFunc)
+                    f = cfuncBuilder((course, sec), SSCFunc)
                     c.add_satisfy_function(f)
                     sf = partial(SSCSupportFunc, course)
                     c.add_support_function(sf)
@@ -347,11 +378,11 @@ def cfuncBuilder(course, func):
     return lambda vals: func(course, vals)
 
 
-def SSCFunc(course, vals):
+def SSCFunc(courseSecTuple, vals):
     # binary only
-    if vals[0][0] == course:
-        return vals[1][0] == course
-    elif vals[1][0] == course:
+    if vals[0] == courseSecTuple:
+        return vals[1] == courseSecTuple
+    elif vals[1] == courseSecTuple:
         return False  # x is != course
     else:
         # both not == course
@@ -364,6 +395,46 @@ def preqFunction(course, prereq, vals):
     else:
         return True
 
+def LTFunc(course, vals):
+    haslec = False
+    hastut = False
+    if course in [v[0] for v in vals]:
+        for v in vals:
+            if isinstance(v[1], LecSection):
+                haslec = True
+            if isinstance(v[1], TutSection):
+                hastut = True
+        #print ("has lec", haslec, "has tut", hastut)
+        return haslec and hastut
+    else:
+        return True
+
+def LPFunc(course, vals):
+    haslec = False
+    haslab = False
+    if course in [v[0] for v in vals]:
+        for v in vals:
+            if isinstance(v[1], LecSection):
+                haslec = True
+            if isinstance(v[1], LabSection):
+                haslab = True
+        return haslec and haslab
+    else:
+        return True
+
+def preqLTPFunc(type1, course, type2, prereq, vals):
+    if vals[0][0] == course:
+        for var in vals[1:]:
+            c = var[0]
+            sec = var[1]
+            if c == prereq:
+                if isinstance(sec, type2):
+                    if type2 == LabSection:
+                        print(type2, sec, "type2 return true")
+                    return True
+        return False
+    else:
+        return True
 
 def numberRequiredSupportFunc(number, val, othervars):
     # print("running num req")
