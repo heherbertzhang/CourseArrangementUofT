@@ -1,0 +1,209 @@
+https://cobalt.qas.im/api/1.0/courses/search?q="Artificial%20Intelligence"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Natural%20Language%20Computing"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Machine%20Learning"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Communication%20Systems"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Computer%20Networks"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Probability%20and%20Applications"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Urban%20Economics"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Introduction%20to%20Number%20Theory"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Introduction%20to%20Databases"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+https://cobalt.qas.im/api/1.0/courses/search?q="Operating%20System"&key=DjMlF9rT1Bgaz0rJPUCK5J15iy7aAh9Q
+FC
+terms {'2015 Fall', '2016 Winter', '2016 Summer Y'}
+!!!!!course time slot count 195
+course ECE316H1F add C LT
+course ECE316H1F add C LPPPPP
+course ECE316H1S add C LT
+course ECE316H1S add C LPPPPP
+course ECE361H1F add C LT
+course ECE361H1F add C LPPPPP
+course ECE361H1S add C LT
+course ECE361H1S add C LPPPPP
+course ECE302H1F add C LT
+course ECE302H1S add C LT
+['CSC384H1F 2015 Fall', 'CSC384H1S 2016 Winter', 'CSC401H1S 2016 Winter', 'CSC411H1F 2015 Fall', 'CSC411H1S 2016 Winter', 'ECE316H1F 2015 Fall', 'ECE316H1S 2016 Winter', 'ECE361H1F 2015 Fall', 'ECE361H1S 2016 Winter', 'ECE302H1F 2015 Fall', 'ECE302H1S 2016 Winter', 'ECO333H1F 2015 Fall', 'ECO333H1S 2016 Winter', 'MAT315H1S 2016 Winter', 'CSC343H1F 2015 Fall', 'CSC343H1S 2016 Winter', 'CSC343H1Y 2016 Summer Y']
+CSP model1:normal model with binary constraints solved. CPU Time used = 2.96251354
+CSP model1:normal model with binary constraints  Assignments = 
+Var--2015 Fall-MONDAY-9             = No Course           , Free   
+Var--2015 Fall-MONDAY-10            = No Course           , Free   
+Var--2015 Fall-MONDAY-11            = No Course           , Free   
+Var--2015 Fall-MONDAY-12            = No Course           , Free   
+Var--2015 Fall-MONDAY-13            = No Course           , Free   
+Var--2015 Fall-MONDAY-14            = No Course           , Free   
+Var--2015 Fall-MONDAY-15            = No Course           , Free   
+Var--2015 Fall-MONDAY-16            = No Course           , Free   
+Var--2015 Fall-MONDAY-17            = No Course           , Free   
+Var--2015 Fall-MONDAY-18            = No Course           , Free   
+Var--2015 Fall-MONDAY-19            = No Course           , Free   
+Var--2015 Fall-MONDAY-20            = No Course           , Free   
+Var--2015 Fall-TUESDAY-9            = No Course           , Free   
+Var--2015 Fall-TUESDAY-10           = No Course           , Free   
+Var--2015 Fall-TUESDAY-11           = No Course           , Free   
+Var--2015 Fall-TUESDAY-12           = No Course           , Free   
+Var--2015 Fall-TUESDAY-13           = No Course           , Free   
+Var--2015 Fall-TUESDAY-14           = No Course           , Free   
+Var--2015 Fall-TUESDAY-15           = No Course           , Free   
+Var--2015 Fall-TUESDAY-16           = No Course           , Free   
+Var--2015 Fall-TUESDAY-17           = No Course           , Free   
+Var--2015 Fall-TUESDAY-18           = No Course           , Free   
+Var--2015 Fall-TUESDAY-19           = No Course           , Free   
+Var--2015 Fall-TUESDAY-20           = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-9          = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-10         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-11         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-12         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-13         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-14         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-15         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-16         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-17         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-18         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-19         = No Course           , Free   
+Var--2015 Fall-WEDNESDAY-20         = No Course           , Free   
+Var--2015 Fall-THURSDAY-9           = No Course           , Free   
+Var--2015 Fall-THURSDAY-10          = No Course           , Free   
+Var--2015 Fall-THURSDAY-11          = No Course           , Free   
+Var--2015 Fall-THURSDAY-12          = No Course           , Free   
+Var--2015 Fall-THURSDAY-13          = No Course           , Free   
+Var--2015 Fall-THURSDAY-14          = No Course           , Free   
+Var--2015 Fall-THURSDAY-15          = No Course           , Free   
+Var--2015 Fall-THURSDAY-16          = No Course           , Free   
+Var--2015 Fall-THURSDAY-17          = No Course           , Free   
+Var--2015 Fall-THURSDAY-18          = No Course           , Free   
+Var--2015 Fall-THURSDAY-19          = No Course           , Free   
+Var--2015 Fall-THURSDAY-20          = No Course           , Free   
+Var--2015 Fall-FRIDAY-9             = No Course           , Free   
+Var--2015 Fall-FRIDAY-10            = No Course           , Free   
+Var--2015 Fall-FRIDAY-11            = No Course           , Free   
+Var--2015 Fall-FRIDAY-12            = No Course           , Free   
+Var--2015 Fall-FRIDAY-13            = No Course           , Free   
+Var--2015 Fall-FRIDAY-14            = No Course           , Free   
+Var--2015 Fall-FRIDAY-15            = No Course           , Free   
+Var--2015 Fall-FRIDAY-16            = No Course           , Free   
+Var--2015 Fall-FRIDAY-17            = No Course           , Free   
+Var--2015 Fall-FRIDAY-18            = No Course           , Free   
+Var--2015 Fall-FRIDAY-19            = No Course           , Free   
+Var--2015 Fall-FRIDAY-20            = No Course           , Free   
+Var--2016 Winter-MONDAY-9           = MAT315H1S 2016 Winter, L0101  
+Var--2016 Winter-MONDAY-10          = CSC401H1S 2016 Winter, L0101  
+Var--2016 Winter-MONDAY-11          = No Course           , Free   
+Var--2016 Winter-MONDAY-12          = CSC411H1S 2016 Winter, L0101  
+Var--2016 Winter-MONDAY-13          = No Course           , Free   
+Var--2016 Winter-MONDAY-14          = No Course           , Free   
+Var--2016 Winter-MONDAY-15          = CSC384H1S 2016 Winter, L0101  
+Var--2016 Winter-MONDAY-16          = No Course           , Free   
+Var--2016 Winter-MONDAY-17          = No Course           , Free   
+Var--2016 Winter-MONDAY-18          = No Course           , Free   
+Var--2016 Winter-MONDAY-19          = No Course           , Free   
+Var--2016 Winter-MONDAY-20          = No Course           , Free   
+Var--2016 Winter-TUESDAY-9          = No Course           , Free   
+Var--2016 Winter-TUESDAY-10         = No Course           , Free   
+Var--2016 Winter-TUESDAY-11         = No Course           , Free   
+Var--2016 Winter-TUESDAY-12         = No Course           , Free   
+Var--2016 Winter-TUESDAY-13         = No Course           , Free   
+Var--2016 Winter-TUESDAY-14         = No Course           , Free   
+Var--2016 Winter-TUESDAY-15         = No Course           , Free   
+Var--2016 Winter-TUESDAY-16         = No Course           , Free   
+Var--2016 Winter-TUESDAY-17         = No Course           , Free   
+Var--2016 Winter-TUESDAY-18         = CSC343H1S 2016 Winter, L2501  
+Var--2016 Winter-TUESDAY-19         = CSC343H1S 2016 Winter, L2501  
+Var--2016 Winter-TUESDAY-20         = CSC343H1S 2016 Winter, L2501  
+Var--2016 Winter-WEDNESDAY-9        = MAT315H1S 2016 Winter, L0101  
+Var--2016 Winter-WEDNESDAY-10       = CSC401H1S 2016 Winter, L0101  
+Var--2016 Winter-WEDNESDAY-11       = No Course           , Free   
+Var--2016 Winter-WEDNESDAY-12       = CSC411H1S 2016 Winter, L0101  
+Var--2016 Winter-WEDNESDAY-13       = No Course           , Free   
+Var--2016 Winter-WEDNESDAY-14       = No Course           , Free   
+Var--2016 Winter-WEDNESDAY-15       = CSC384H1S 2016 Winter, L0101  
+Var--2016 Winter-WEDNESDAY-16       = No Course           , Free   
+Var--2016 Winter-WEDNESDAY-17       = No Course           , Free   
+Var--2016 Winter-WEDNESDAY-18       = ECO333H1S 2016 Winter, L5201  
+Var--2016 Winter-WEDNESDAY-19       = ECO333H1S 2016 Winter, L5201  
+Var--2016 Winter-WEDNESDAY-20       = ECO333H1S 2016 Winter, L5201  
+Var--2016 Winter-THURSDAY-9         = No Course           , Free   
+Var--2016 Winter-THURSDAY-10        = No Course           , Free   
+Var--2016 Winter-THURSDAY-11        = No Course           , Free   
+Var--2016 Winter-THURSDAY-12        = No Course           , Free   
+Var--2016 Winter-THURSDAY-13        = No Course           , Free   
+Var--2016 Winter-THURSDAY-14        = No Course           , Free   
+Var--2016 Winter-THURSDAY-15        = No Course           , Free   
+Var--2016 Winter-THURSDAY-16        = No Course           , Free   
+Var--2016 Winter-THURSDAY-17        = No Course           , Free   
+Var--2016 Winter-THURSDAY-18        = No Course           , Free   
+Var--2016 Winter-THURSDAY-19        = No Course           , Free   
+Var--2016 Winter-THURSDAY-20        = No Course           , Free   
+Var--2016 Winter-FRIDAY-9           = MAT315H1S 2016 Winter, L0101  
+Var--2016 Winter-FRIDAY-10          = CSC401H1S 2016 Winter, L0101  
+Var--2016 Winter-FRIDAY-11          = No Course           , Free   
+Var--2016 Winter-FRIDAY-12          = CSC411H1S 2016 Winter, L0101  
+Var--2016 Winter-FRIDAY-13          = No Course           , Free   
+Var--2016 Winter-FRIDAY-14          = No Course           , Free   
+Var--2016 Winter-FRIDAY-15          = CSC384H1S 2016 Winter, L0101  
+Var--2016 Winter-FRIDAY-16          = No Course           , Free   
+Var--2016 Winter-FRIDAY-17          = No Course           , Free   
+Var--2016 Winter-FRIDAY-18          = No Course           , Free   
+Var--2016 Winter-FRIDAY-19          = No Course           , Free   
+Var--2016 Winter-FRIDAY-20          = No Course           , Free   
+Var--2016 Summer Y-MONDAY-9         = No Course           , Free   
+Var--2016 Summer Y-MONDAY-10        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-11        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-12        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-13        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-14        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-15        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-16        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-17        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-18        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-19        = No Course           , Free   
+Var--2016 Summer Y-MONDAY-20        = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-9        = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-10       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-11       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-12       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-13       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-14       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-15       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-16       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-17       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-18       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-19       = No Course           , Free   
+Var--2016 Summer Y-TUESDAY-20       = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-9      = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-10     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-11     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-12     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-13     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-14     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-15     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-16     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-17     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-18     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-19     = No Course           , Free   
+Var--2016 Summer Y-WEDNESDAY-20     = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-9       = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-10      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-11      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-12      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-13      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-14      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-15      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-16      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-17      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-18      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-19      = No Course           , Free   
+Var--2016 Summer Y-THURSDAY-20      = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-9         = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-10        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-11        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-12        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-13        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-14        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-15        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-16        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-17        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-18        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-19        = No Course           , Free   
+Var--2016 Summer Y-FRIDAY-20        = No Course           , Free   
+
+bt_search finished
+Search made 20925 variable assignments and pruned 65826 variable values and back tracked 20745 times

@@ -1,7 +1,7 @@
 from CourseClass import *
 from cspbase import *
 from functools import partial
-
+from Log import *
 
 class CourseModelBuilder:
     def __init__(self, courseList, numberOfRequriedCourse):
@@ -187,9 +187,12 @@ class CourseModelBuilder:
         return constraints
 
     def createSameSecForLecTutPraConstraints(self, course, lecs, tuts, labs):
-        lectimesForAllSecs = [self.getVariableForTime(lec.times[0]) for lec in lecs]
+        lectimesForAllSecs = [self.getVariableForTime(lec.times[0]) for lec in lecs] #self.getAllTimeVarForSects(*lecs)#
         tutTimesForAllSecs = [self.getVariableForTime(tut.times[0]) for tut in tuts]
         labTimesForAllSecs = [self.getVariableForTime(lab.times[0]) for lab in labs]
+        #lectimesForAllSecs = self.sumList(lectimesForAllSecs)
+        #tutTimesForAllSecs = self.sumList(tutTimesForAllSecs)
+        #labTimesForAllSecs = self.sumList(labTimesForAllSecs)
         timeslectut = set()
         timesleclab = set()
         times = set()
@@ -207,24 +210,28 @@ class CourseModelBuilder:
         timesleclab = list(timesleclab)
         times = list(times)
         cs = []
+        '''
         if tutTimesForAllSecs and labTimesForAllSecs:
-            c = Constraint("LT:{}".format(course.courseCode), timeslectut)
+            c = Constraint("LT:{}".format(course.courseCode), times)
             f = partial(LTPFunc, course)
             c.add_satisfy_function(f)
             cs.append(c)
-            print("course {} add C LTP".format(course.courseCode))
-        elif tutTimesForAllSecs:
+            print("course {} add C LTP".format(course.courseCode))'''
+        if tutTimesForAllSecs:
             c = Constraint("LT:{}".format(course.courseCode), timeslectut)
             f = partial(LTFunc, course)
+            sf = partial(LTSupportFunc, course)
             c.add_satisfy_function(f)
+            c.add_support_function(sf)
             cs.append(c)
             print("course {} add C LT".format(course.courseCode))
-        elif labTimesForAllSecs:
+        if labTimesForAllSecs:
             c = Constraint("LP:{}".format(course.courseCode), timesleclab)
             f = partial(LPFunc, course)
             c.add_satisfy_function(f)
+            sf = partial(LPSupportFunc, course)
+            c.add_support_function(sf)
             cs.append(c)
-            print(timesleclab)
             print("course {} add C LPPPPP".format(course.courseCode))
 
         '''
@@ -406,20 +413,25 @@ def preqFunction(course, prereq, vals):
         return prereq in [v[0] for v in vals[1:]]
     else:
         return True
+
 def LTPFunc(course, vals):
     haslec = False
     hastut = False
     haslab = False
+    #print("LTP check", course.courseCode, printdomain(vals))
     if course in [v[0] for v in vals]:
         for v in vals:
-            if isinstance(v[1], LecSection):
+            if v[0] == course and isinstance(v[1], LecSection):
                 haslec = True
-            if isinstance(v[1], TutSection):
+            if v[0] == course and isinstance(v[1], TutSection):
                 hastut = True
-            if isinstance(v[1], LabSection):
+            if v[0] == course and isinstance(v[1], LabSection):
                 haslab = True
-        #print ("has lec", haslec, "has tut", hastut)
-        return haslec and hastut and haslab
+            if haslec and hastut and haslab:
+                #print ("has lec", haslec, "has tut", hastut, "has lab", haslab)
+                return True
+
+        return False
     else:
         return True
 
@@ -428,9 +440,9 @@ def LTFunc(course, vals):
     hastut = False
     if course in [v[0] for v in vals]:
         for v in vals:
-            if isinstance(v[1], LecSection):
+            if v[0] == course and isinstance(v[1], LecSection):
                 haslec = True
-            if isinstance(v[1], TutSection):
+            if v[0] == course and isinstance(v[1], TutSection):
                 hastut = True
         #print ("has lec", haslec, "has tut", hastut)
         return haslec and hastut
@@ -442,11 +454,55 @@ def LPFunc(course, vals):
     haslab = False
     if course in [v[0] for v in vals]:
         for v in vals:
-            if isinstance(v[1], LecSection):
+            if v[0] == course and isinstance(v[1], LecSection):
                 haslec = True
-            if isinstance(v[1], LabSection):
+            if v[0] == course and isinstance(v[1], LabSection):
                 haslab = True
-        print ("has lec", haslec, "has lab", haslab, haslec and haslab)
+        #print ("has lec", haslec, "has lab", haslab, haslec and haslab)
+        return haslec and haslab
+    else:
+        return True
+
+def LTSupportFunc(course, val, othervars):
+    haslec = False
+    hastut = False
+
+    assigned = [v.cur_domain()[0] for v in othervars if v.domain_size() ==1]
+    assigned.append(val)
+
+    if course in [v[0] for v in assigned]:
+        if val[0] == course and isinstance(val[1], LecSection):
+            haslec = True
+        if val[0] == course and isinstance(val[1], TutSection):
+            hastut = True
+        for v in othervars:
+            if [valt for valt in v.cur_domain() if valt[0] == course and isinstance(valt[1],LecSection)]:
+                haslec = True
+            if [valt for valt in v.cur_domain() if valt[0] == course and isinstance(valt[1],TutSection)]:
+                hastut = True
+        #print ("has lec", haslec, "has tut", hastut)
+        return haslec and hastut
+    else:
+        return True
+
+def LPSupportFunc(course, val, othervars):
+    haslec = False
+    haslab = False
+
+    assigned = [v.cur_domain()[0] for v in othervars if v.domain_size() ==1]
+    assigned.append(val)
+
+    if course in [v[0] for v in assigned]:
+        if val[0] == course and isinstance(val[1], LecSection):
+            haslec = True
+        if val[0] == course and isinstance(val[1], LabSection):
+            haslab = True
+        for v in othervars:
+            if [valt for valt in v.cur_domain() if valt[0] == course and isinstance(valt[1],LecSection)]:
+                haslec = True
+            if [valt for valt in v.cur_domain() if valt[0] == course and isinstance(valt[1],LabSection)]:
+                haslab = True
+        #print ("has lec", haslec, "has tut", hastut)
         return haslec and haslab
     else:
         return True
